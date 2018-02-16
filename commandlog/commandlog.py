@@ -1,4 +1,7 @@
 import pathlib
+import unicodedata as ud
+import re
+
 path = 'data/commandlog'
 
 
@@ -7,11 +10,12 @@ class CommandLog:
     Debug tool
     """
     __author__ = "mikeshardmind (Sinbad#0413)"
-    __version__ = "1.0.0"
+    __version__ = "2.0.0"
 
     def __init__(self, bot):
         self.bot = bot
         self.cc = self.bot.get_cog('CustomCommands')
+        self.unicode_regex = re.compile(r'\\u[a-z0-9%]{4}')
 
     async def on_command_completion(self, command, ctx):
         msg = (
@@ -46,8 +50,17 @@ class CommandLog:
             self.wr_msg(msg)
 
     def wr_msg(self, msg):
+        _m = msg.encode('unicode_escape').decode('utf-8')
+        ret = ""
+        nxt = None
+        for match in self.unicode_regex.finditer(_m):
+            ret += _m[nxt:match.span()[0]]
+            nxt = match.span()[1]
+            x = ud.name(
+                match.group(0).encode('ASCII').decode('unicode-escape'))
+            ret += "\\N{" + x + "}"
         with open(path + '/cmds.log', mode='a') as f:
-            f.write('\n' + msg)
+            f.write('\n' + ret)
 
 
 def setup(bot):
