@@ -172,6 +172,8 @@ class MultiWayRelay:
         """
         joins one of your server's channels to the list of broadcast recipients
         """
+        if len(self.bcasts) == 0:
+            return await self.bot.say("No broadcasts available to get")
         if channel.guild != ctx.message.guild:
             return await self.bot.say("Nice try.")
         if any(v == channel.id for v in self.bcasts.values()):
@@ -189,6 +191,8 @@ class MultiWayRelay:
         """
         leaves broadcasts on a channel
         """
+        if len(self.bcasts) == 0:
+            return await self.bot.say("No broadcasts available to leave")
         if channel.guild != ctx.message.guild:
             return await self.bot.say("Nice try.")
         if not any(v == channel.id for v in self.bcasts.values()):
@@ -264,7 +268,6 @@ class MultiWayRelay:
                 return
             if not message.content.startswith("\u200b"):
                 return
-                
             destinations.update(
                 [c for c in self.bot.get_all_channels()
                  if c.id in self.bcasts.values()
