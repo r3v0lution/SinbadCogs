@@ -135,14 +135,12 @@ class MultiWayRelay:
             await self.bot.say("No such relay")
 
     @relay.command(name="addrss", pass_context=True)
-    async def add_rss_support(
-        self, ctx,
-            broadcast_channel: discord.Channel, rss_channel: discord.Channel):
+    async def add_rss_support(self, ctx, rss_channel: discord.Channel):
         """
-        Takes 2 channels, one should be the broadcast source channel,
-        the other should be the rss listening channel
+        takes an rss listening channel
         """
-        self.rss['links'][rss_channel.id] = broadcast_channel.id
+        self.rss['links'] = \
+            unique(self.rss.get('links', []) + [rss_channel.id])
         self.save_json()
         await self.bot.say("RSS listener added.")
 
@@ -155,43 +153,27 @@ class MultiWayRelay:
         announcer = self.bot.get_cog("Announcer")
         if announcer is None:
             return await self.bot.send_cmd_help(ctx)
-        self.bcasts[source_chan.id] = unique(
-            [v['channel'] for k, v in announcer.settings.items()]
-        )
+        self.bcasts = {
+            source_chan.id: unique(
+                [v['channel'] for k, v in announcer.settings.items()]
+            )
+        }
         self.save_json()
         await self.bot.say('Broadcast configured.')
 
     @relay.command(name="makebroadcast", pass_context=True)
-    async def mbroadcast(self, ctx, broadcast_source: str, *outputs: str):
+    async def mbroadcast(self, ctx, broadcast_source: discord.Channel):
         """
-        takes a source channel and a list of outputs
-        Use with no outputs to remove the broadcast setting
-        for that channel
+        takes a source channel
         """
-
-        if len(outputs) == 0:
-            x = self.bcasts.pop(broadcast_source, None)
-            if x:
-                return await self.bot.say("Broadcast removed")
-            else:
-                return await self.bot.say(
-                    "That wasn't a broadcast channel to be removed, "
-                    "or you forgot to give me outputs"
-                )
-
-        if any(
-            self.bot.get_channel(x) is None
-            for x in list(outputs) + [broadcast_source]
-        ):
+        if broadcast_source.id in self.bcasts.keys():
             return await self.bot.say(
-                'One or more of those aren\'t channel ids that I can see')
+                "Channel already set as broadcast source"
+            )
 
-        _out = set(o for o in outputs if o != broadcast_source)
-        if len(_out) == 0:
-            return await self.bot.say('No infinite loops')
-        self.bcasts[broadcast_source] = list(_out)
+        self.bcasts = {broadcast_source.id: []}
         self.save_json()
-        await self.bot.say('Broadcast configured.')
+        await self.bot.say('Broadcast source set.')
 
     @relay.command(name="list", pass_context=True)
     async def list_links(self, ctx):
@@ -228,7 +210,7 @@ class MultiWayRelay:
 
             destinations.update(
                 [c for c in self.bot.get_all_channels()
-                 if c.id in self.bcasts.get(channel.id, [])
+                 if c.id in self.bcasts.values()
                  and c.type == discord.ChannelType.text]
             )
 
@@ -236,15 +218,18 @@ class MultiWayRelay:
                 await self.sender(destination, message)
 
         else:  # RSS Relay Stuff
-            if message.content.startswith("\u200b"):
-                _id = self.rss['links'].get(channel.id, None)
-                destinations.update(
-                    [c for c in self.bot.get_all_channels()
-                     if c.id in self.bcasts.get(_id, [])
-                     and c.type == discord.ChannelType.text]
-                )
-                for destination in destinations:
-                    await self.rss_sender(destination, message)
+            if channel.id not in self.rss.get('links', []):
+                return
+            if not message.content.startswith("\u200b"):
+                return
+                
+            destinations.update(
+                [c for c in self.bot.get_all_channels()
+                 if c.id in self.bcasts.values()
+                 and c.type == discord.ChannelType.text]
+            )
+            for destination in destinations:
+                await self.rss_sender(destination, message)
 
     async def rss_sender(self, where, message=None):
         if message:
