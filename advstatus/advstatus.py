@@ -15,6 +15,12 @@ class AdvStatus:
     __version__ = "1.0.0"
     __author__ = "mikeshardmind (Sinbad#0001)"
 
+    status_dict = {
+        'playing': 0,
+        'listening': 2,
+        'watching': 3
+    }
+
     def __init__(self, bot):
         self.bot = bot
         try:
@@ -24,7 +30,7 @@ class AdvStatus:
         else:
             self.bot.loop.create_task(
                 self.modify_presence(
-                                  self.settings['type'], self.settings['title']
+                    self.settings['type'], self.settings['title']
                                   ))
 
     def save_settings(self):
@@ -35,7 +41,9 @@ class AdvStatus:
         name='changepresence', pass_context=True, aliases=['advstatus'])
     async def changepresence(self, ctx, gametype, *, gamename):
         """
-        gametype should be a numeric value based on the below
+        gametype should be playing, listenging, or watching
+
+        or a numeric value based on the below
         'playing'   : 0,
         'listening' : 2,
         'watching' : 3
@@ -48,9 +56,14 @@ class AdvStatus:
         else:
             title = gamename.strip()
 
-        gt = int(gametype)
-        if gt not in [0, 2, 3]:
+        try:
+            gt = int(gametype)
+        except ValueError:
+            gt = self.status_dict.get(gametype.strip().lower(), -1)
+
+        if gt not in self.status_dict.values():
             return await self.bot.send_cmd_help(ctx)
+
         await self.modify_presence(gt, title)
         self.settings = {'type': gt, 'title': title}
         self.save_settings()
