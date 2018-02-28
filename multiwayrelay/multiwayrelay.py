@@ -179,7 +179,7 @@ class MultiWayRelay:
         """
         if len(self.bcasts) == 0:
             return await self.bot.say("No broadcasts available to get")
-        if channel.guild != ctx.message.guild:
+        if channel.server != ctx.message.server:
             return await self.bot.say("Nice try.")
         if any(v == channel.id for v in self.bcasts.values()):
             return await self.bot.say("Already signed up.")
@@ -198,7 +198,7 @@ class MultiWayRelay:
         """
         if len(self.bcasts) == 0:
             return await self.bot.say("No broadcasts available to leave")
-        if channel.guild != ctx.message.guild:
+        if channel.server != ctx.message.server:
             return await self.bot.say("Nice try.")
         if not any(v == channel.id for v in self.bcasts.values()):
             return await self.bot.say("Not signed up for any broadcasts.")
