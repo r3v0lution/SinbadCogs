@@ -5,6 +5,7 @@ from cogs.utils.dataIO import dataIO
 from cogs.utils import checks
 import re
 import itertools
+from __main__ import settings
 
 path = 'data/multiwayrelay'
 
@@ -179,7 +180,9 @@ class MultiWayRelay:
         """
         if len(self.bcasts) == 0:
             return await self.bot.say("No broadcasts available to get")
-        if channel.server != ctx.message.server:
+        if channel.server != ctx.message.server \
+                and ctx.message.author.id not in \
+                ctx.bot.settings.co_owners + [settings.owner]:
             return await self.bot.say("Nice try.")
         if any(v == channel.id for v in self.bcasts.values()):
             return await self.bot.say("Already signed up.")
@@ -198,7 +201,9 @@ class MultiWayRelay:
         """
         if len(self.bcasts) == 0:
             return await self.bot.say("No broadcasts available to leave")
-        if channel.server != ctx.message.server:
+        if channel.server != ctx.message.server \
+                and ctx.message.author.id not in \
+                ctx.bot.settings.co_owners + [settings.owner]:
             return await self.bot.say("Nice try.")
         if not any(v == channel.id for v in self.bcasts.values()):
             return await self.bot.say("Not signed up for any broadcasts.")
