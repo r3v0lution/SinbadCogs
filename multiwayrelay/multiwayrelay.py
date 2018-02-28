@@ -143,8 +143,13 @@ class MultiWayRelay:
         """
         takes an rss listening channel
         """
-        self.rss['links'] = \
-            unique(self.rss.get('links', []) + [rss_channel.id])
+        existing = self.rss.get('links', [])
+        if isinstance(existing, dict):
+            # This is what I get for modifying storage
+            self.rss['links'] = list(existing.keys()) + [rss_channel.id]
+        else:
+            self.rss['links'] = existing + [rss_channel.id]
+
         self.save_json()
         await self.bot.say("RSS listener added.")
 
