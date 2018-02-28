@@ -18,6 +18,7 @@ class AdvStatus:
     status_dict = {
         'playing': 0,
         'listening': 2,
+        'listenging': 2,  # 13d4809d1979c9c093b12d7e79d4ccaed8ada215
         'watching': 3
     }
 
@@ -41,7 +42,7 @@ class AdvStatus:
         name='changepresence', pass_context=True, aliases=['advstatus'])
     async def changepresence(self, ctx, gametype, *, gamename):
         """
-        gametype should be playing, listenging, or watching
+        gametype should be playing, listening, or watching
 
         or a numeric value based on the below
         'playing'   : 0,
