@@ -15,7 +15,7 @@ class EmbedMaker:
     """
 
     __author__ = "mikeshardmind (Sinbad#0001)"
-    __version__ = "1.1.1"
+    __version__ = "1.1.2"
 
     def __init__(self, bot):
 
@@ -84,7 +84,7 @@ class EmbedMaker:
         else:
             await self.bot.say("No embeds here.")
 
-    @checks.admin_or_permissions(Manage_server=True)
+    @checks.admin_or_permissions(manage_server=True)
     @embedset.command(name="toggleactive", pass_context=True, no_pm=True)
     async def embed_toggle(self, ctx):
         """Toggles whether embeds are enabled or not"""
@@ -113,7 +113,7 @@ class EmbedMaker:
         else:
             await self.bot.say("Global Embeds enabled.")
 
-    @checks.admin_or_permissions(Manage_messages=True)
+    @checks.admin_or_permissions(manage_messages=True)
     @embed.command(name="remove", pass_context=True, no_pm=True)
     async def remove_embed(self, ctx, name: str):
         """removes an embed"""
@@ -136,7 +136,7 @@ class EmbedMaker:
         self.save_embeds()
         await self.bot.say("If an embed of that name existed, it is gone now.")
 
-    @checks.admin_or_permissions(Manage_messages=True)
+    @checks.admin_or_permissions(manage_messages=True)
     @embed.command(name="make", pass_context=True, no_pm=True)
     async def make_embed(self, ctx, name: str):
         """Interactive prompt for making an embed"""
@@ -204,7 +204,7 @@ class EmbedMaker:
             return await self.bot.say("I couldn't find an embed by that name.")
         await self.bot.send_message(ctx.message.channel, embed=em)
 
-    @checks.admin_or_permissions(Manage_messages=True)
+    @checks.admin_or_permissions(manage_messages=True)
     @embed.command(name="dm", pass_context=True, no_pm=True)
     async def fetch_dm(self, ctx, name: str, who: discord.Member):
         """fetches an embed, and DMs it to a user"""
