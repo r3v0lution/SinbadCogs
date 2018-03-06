@@ -67,7 +67,7 @@ class AntiSpotify:
 
         if channel.id in self.settings[server.id]['whitelist']:
             return await self.bot.say('Channel already whitelisted')
-        self.settings[server.id]['active'].append(channel.id)
+        self.settings[server.id]['whitelist'].append(channel.id)
         self.save_json()
         await self.bot.say('Channel whitelisted.')
 
@@ -82,7 +82,7 @@ class AntiSpotify:
 
         if channel.id not in self.settings[server.id]['whitelist']:
             return await self.bot.say('Channel wasn\'t whitelisted')
-        self.settings[server.id]['active'].remove(channel.id)
+        self.settings[server.id]['whitelist'].remove(channel.id)
         self.save_json()
         await self.bot.say('Channel unwhitelisted.')
 
