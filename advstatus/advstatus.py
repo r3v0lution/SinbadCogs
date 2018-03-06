@@ -1,5 +1,6 @@
 import discord
 import pathlib
+import asyncio
 from cogs.utils.dataIO import dataIO
 from discord.ext import commands
 from cogs.utils import checks
@@ -12,7 +13,7 @@ class AdvStatus:
     Quick and dirty cog for allowing the playing/watching/or listening statuses
     """
 
-    __version__ = "1.0.0"
+    __version__ = "1.0.1"
     __author__ = "mikeshardmind (Sinbad#0001)"
 
     status_dict = {
@@ -30,7 +31,7 @@ class AdvStatus:
             self.settings = None
         else:
             self.bot.loop.create_task(
-                self.modify_presence(
+                self.loading_safe(
                     self.settings['type'], self.settings['title']
                                   ))
 
@@ -74,6 +75,10 @@ class AdvStatus:
         current_status = list(self.bot.servers)[0].me.status
         game = discord.Game(name=title, type=gt)
         await self.bot.change_presence(game=game, status=current_status)
+
+    async def loading_safe(self, gt: int, title: str):
+        await asyncio.sleep(5)
+        await self.modify_presence(gt, title)
 
 
 def setup(bot):
