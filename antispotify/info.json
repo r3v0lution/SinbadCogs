@@ -3,5 +3,6 @@
     "INSTALL_MSG": "If you need help, I lurk in in this discord https://discord.gg/GET4DVk. (or leave an issue on github)",
     "NAME": "AntiSpotify",
     "SHORT": "removes spotify messages",
-    "DESCRIPTION": "if on in a server, operates on a channel whitelist basis"
+    "DESCRIPTION": "if on in a server, operates on a channel whitelist basis",
+    "TAGS" : ["Moderation", "spotify"]
 }

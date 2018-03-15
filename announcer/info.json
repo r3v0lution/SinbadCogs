@@ -3,5 +3,6 @@
     "INSTALL_MSG" : "If you need help, I lurk in in this discord https://discord.gg/GET4DVk : If you find a bug leave an issue on github.",
     "NAME" : "Announcer",
     "SHORT" : "An announcements cog",
-    "DESCRIPTION" : "An announcement cog that sends a message to any number of servers in configurable channels"
+    "DESCRIPTION" : "An announcement cog that sends a message to any number of servers in configurable channels",
+    "TAGS" : ["Announcement"]
 }

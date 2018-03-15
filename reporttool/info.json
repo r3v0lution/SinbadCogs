@@ -3,5 +3,6 @@
     "INSTALL_MSG" : "If you need help, I lurk in in this discord https://discord.gg/GET4DVk : If you find a bug leave an issue on github.",
     "NAME" : "ReportTool",
     "SHORT" : "reporting tool",
-    "DESCRIPTION" : "collects reports, dumps them in configured channel(s)"
+    "DESCRIPTION" : "collects reports, dumps them in configured channel(s)",
+    "TAGS" : ["report", "moderation"]
 }
