@@ -93,7 +93,5 @@ class MemberCSV:
 
 
 def setup(bot):
-    if path.exists:
-        path.rmdir()
     path.mkdir(exist_ok=True, parents=True)
     bot.add_cog(MemberCSV(bot))
