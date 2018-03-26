@@ -21,7 +21,7 @@ class MemberCSV:
 
     async def csv_from_guild(self, who: discord.Member) -> Path:
         server = who.server
-        fp = path / "{0.id}.csv".format(who)
+        fp = path / "{0.server.id}.csv".format(who)
         with fp.open(mode='w', encoding='utf-8') as csvfile:
             fieldnames = [
                 'id',
