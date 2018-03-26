@@ -4,7 +4,6 @@ from discord.ext import commands
 import csv
 from pathlib import Path
 from datetime import datetime
-import os
 
 path = Path('data') / 'membercsv'
 
@@ -15,7 +14,7 @@ class MemberCSV:
     """
 
     __author__ = "mikeshardmind(Sinbad#0001)"
-    __version__ = "0.0.2a"
+    __version__ = "0.0.3"
 
     def __init__(self, bot):
         self.bot = bot
@@ -44,7 +43,7 @@ class MemberCSV:
 
     async def get_member_row(self, member: discord.Member) -> dict:
         ret = {
-            'id': member.id,
+            'id': "\u200b {}".format(member.id),
             'name': str(member),
             'highestrole': "{0.name} ({0.id})".format(member.top_role),
             'membersince': member.joined_at.strftime("%d %b %Y %H:%M"),
@@ -78,17 +77,17 @@ class MemberCSV:
             return await self.bot.say(
                 "wait a moment, still finishing your previous request.")
         self.user_cache.append(ctx.message.author)
-        try:
-            await self.bot.whisper(
-                "This might take a few minutes depending on server size")
-        except Exception:
-            await self.bot.say(
-                "I can't do that. I need to be able to message you.")
-        else:
-            fp = await self.csv_from_guild(ctx.message.author)
-            await self.bot.send_file(ctx.message.author, fp)
-            os.remove(fp.resolve())
 
+        fp = await self.csv_from_guild(ctx.message.author)
+        try:
+            await self.bot.send_file(ctx.message.author, fp)
+        except discord.Forbidden:
+            try:
+                await self.bot.send_file(ctx.message.channel, fp)
+            except Exception:
+                await self.bot.say("I can't DM you or upload files here.")
+
+        fp.unlink()
         self.user_cache.remove(ctx.message.author)
 
 
