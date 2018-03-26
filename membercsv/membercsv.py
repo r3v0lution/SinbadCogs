@@ -6,7 +6,7 @@ from pathlib import Path
 from datetime import datetime
 import os
 
-path = Path('data/membercsv')
+path = Path('data') / 'membercsv'
 
 
 class MemberCSV:
@@ -15,16 +15,17 @@ class MemberCSV:
     """
 
     __author__ = "mikeshardmind(Sinbad#0001)"
-    __version__ = "0.0.1a"
+    __version__ = "0.0.2a"
 
     def __init__(self, bot):
         self.bot = bot
+        self.user_cache = []
 
     async def csv_from_guild(self, who: discord.Member) -> Path:
         server = who.server
-        fp = path / "{0}-{1.server.id}-{1.id}.csv".format(
+        fp = path / "{0}-{1.id}.csv".format(
             str(datetime.utcnow())[:10], who)
-        with open(fp, 'x') as csvfile:
+        with fp.open(mode='w', encoding='utf-8') as csvfile:
             fieldnames = [
                 'id',
                 'name',
@@ -32,7 +33,6 @@ class MemberCSV:
                 'membersince',
                 'discordmembersince',
                 'memberage',
-                'lastmessage',
                 'currentstatus',
                 'currentactivity'
             ]
@@ -66,25 +66,6 @@ class MemberCSV:
             g = "Watching: {}".format(member.game)
         ret['currentactivity'] = g
 
-        server = member.server
-        msg_time = None
-        for channel in filter(
-                lambda c: c.type.name == 'text', server.channels):
-            try:
-                async for message in self.bot.logs_from(
-                        channel, limit=10000, reverse=True):
-                    if message.author.id == member.id:
-                        if msg_time is None:
-                            msg_time = message.timestamp
-                        else:
-                            msg_time = max(msg_time, message.timestamp)
-                        break
-            except Exception:
-                pass
-
-        ret['lastmessage'] = \
-            msg_time.strftime("%d %b %Y %H:%M") if msg_time else ""
-
         return ret
 
     @commands.command(name='getmembercsv', pass_context=True, no_pm=True)
@@ -93,20 +74,22 @@ class MemberCSV:
         """
         get a csv with member data
         """
-
+        if ctx.message.author in self.user_cache:
+            return await self.bot.say(
+                "wait a moment, still finishing your previous request.")
+        self.user_cache.append(ctx.message.author)
         try:
             await self.bot.whisper(
                 "This might take a few minutes depending on server size")
         except Exception:
-            return await self.bot.say(
+            await self.bot.say(
                 "I can't do that. I need to be able to message you.")
-        try:
+        else:
             fp = await self.csv_from_guild(ctx.message.author)
-        except FileExistsError:
-            return await self.bot.say(
-                'Be patient, im working on it already.')
-        await self.bot.send_file(ctx.message.author, fp)
-        os.remove(fp.resolve())
+            await self.bot.send_file(ctx.message.author, fp)
+            os.remove(fp.resolve())
+
+        self.user_cache.remove(ctx.message.author)
 
 
 def setup(bot):
