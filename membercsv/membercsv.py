@@ -14,16 +14,14 @@ class MemberCSV:
     """
 
     __author__ = "mikeshardmind(Sinbad#0001)"
-    __version__ = "0.0.3"
+    __version__ = "1.0.0"
 
     def __init__(self, bot):
         self.bot = bot
-        self.user_cache = []
 
     async def csv_from_guild(self, who: discord.Member) -> Path:
         server = who.server
-        fp = path / "{0}-{1.id}.csv".format(
-            str(datetime.utcnow())[:10], who)
+        fp = path / "{0.id}.csv".format(who)
         with fp.open(mode='w', encoding='utf-8') as csvfile:
             fieldnames = [
                 'id',
@@ -73,10 +71,6 @@ class MemberCSV:
         """
         get a csv with member data
         """
-        if ctx.message.author in self.user_cache:
-            return await self.bot.say(
-                "wait a moment, still finishing your previous request.")
-        self.user_cache.append(ctx.message.author)
 
         fp = await self.csv_from_guild(ctx.message.author)
         try:
@@ -88,7 +82,6 @@ class MemberCSV:
                 await self.bot.say("I can't DM you or upload files here.")
 
         fp.unlink()
-        self.user_cache.remove(ctx.message.author)
 
 
 def setup(bot):
