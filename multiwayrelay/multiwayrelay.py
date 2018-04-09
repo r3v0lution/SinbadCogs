@@ -139,7 +139,7 @@ class MultiWayRelay:
             await self.bot.say("No such relay")
 
     @checks.is_owner()
-    @relay.command(name="addrss", pass_context=True)
+    @relay.command(name="addrss", pass_context=True, hidden=True)
     async def add_rss_support(self, ctx, rss_channel: discord.Channel):
         """
         takes an rss listening channel
@@ -155,7 +155,7 @@ class MultiWayRelay:
         await self.bot.say("RSS listener added.")
 
     @checks.is_owner()
-    @relay.command(name="broadfromannounce", pass_context=True)
+    @relay.command(name="broadfromannounce", pass_context=True, hidden=True)
     async def mfromannounce(self, ctx, source_chan: discord.Channel):
         """
         Plugs into my announcer cog to grab subscribed channels
@@ -173,7 +173,8 @@ class MultiWayRelay:
         await self.bot.say('Broadcast configured.')
 
     @checks.serverowner_or_permissions(manage_server=True)
-    @relay.command(name="getbroadcasts", pass_context=True, no_pm=True)
+    @relay.command(
+        name="getbroadcasts", pass_context=True, no_pm=True, hidden=True)
     async def get_broadcasts(self, ctx, channel: discord.Channel):
         """
         joins one of your server's channels to the list of broadcast recipients
@@ -194,7 +195,7 @@ class MultiWayRelay:
         await self.bot.say("Signed up for broadcasts here.")
 
     @checks.serverowner_or_permissions(manage_server=True)
-    @relay.command(name="stopbroadcasts", pass_context=True)
+    @relay.command(name="stopbroadcasts", pass_context=True, hidden=True)
     async def stop_broadcasts(self, ctx, channel: discord.Channel):
         """
         leaves broadcasts on a channel
@@ -216,7 +217,7 @@ class MultiWayRelay:
         await self.bot.say("No more broadcasts here.")
 
     @checks.is_owner()
-    @relay.command(name="makebroadcast", pass_context=True)
+    @relay.command(name="makebroadcast", pass_context=True, hidden=True)
     async def mbroadcast(self, ctx, broadcast_source: discord.Channel):
         """
         takes a source channel
