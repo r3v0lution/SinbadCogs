@@ -4,7 +4,7 @@ class CheckShim:
 
     def __init__(self, bot):
         self.bot = bot
-        self.disallowed = ['contact']
+        self.disallowed = []
         self.restricted = ['Audio']
         self.my_guilds = [355902355868483584, 78634202018357248]
 
