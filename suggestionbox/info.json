@@ -1,8 +1,9 @@
 {
     "AUTHOR" : "mikeshardmind (Sinbad#0413)",
-    "INSTALL_MSG" : "Unsupported, but still here for people to get (works as of obsoleteing it)",
+    "INSTALL_MSG" : "Still works",
     "NAME" : "SuggestionBox",
     "SHORT" : "Make a suggestion box",
     "DESCRIPTION" : "collects suggestions, dumps them in configured channel(s)",
-    "HIDDEN" : true
+    "HIDDEN" : false,
+    "TAGS" : ["Suggestion", "suggest"]
 }
