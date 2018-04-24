@@ -50,7 +50,7 @@ class TempChannels:
                                         }
             self.save_json()
 
-    @checks.admin_or_permissions(Manage_channels=True)
+    @checks.admin_or_permissions(manage_channels=True)
     @tempset.command(name="toggleactive", pass_context=True, no_pm=True)
     async def tempchanneltoggle(self, ctx):
         """toggles the temp channels commands on/off for all users
@@ -71,7 +71,7 @@ class TempChannels:
             await self.bot.say('Creation of temporary '
                                'channels is now enabled.')
 
-    @checks.admin_or_permissions(Manage_channels=True)
+    @checks.admin_or_permissions(manage_channels=True)
     @tempset.command(name="category", pass_context=True, no_pm=True)
     async def setcategory(self, ctx, category_name_or_id=None):
         """
@@ -94,7 +94,7 @@ class TempChannels:
         self.save_json()
         await self.bot.say('Category set.')
 
-    @checks.admin_or_permissions(Manage_channels=True)
+    @checks.admin_or_permissions(manage_channels=True)
     @tempset.command(name="toggleowner", pass_context=True, no_pm=True)
     async def toggleowner(self, ctx):
         """toggles if the creator of the temp channel owns it
